@@ -1,0 +1,46 @@
+name: Send-Commit-Author-Email.
+
+# Run this workflow every time a new commit pushed to your repository
+on: push
+
+jobs:
+  # Set the job key. The key is displayed as the job name
+  # when a job name is not provided
+  send-email:
+    # Name the Job
+    name: Send Author Email
+    # Set the type of machine to run on
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+      - name: Expose git commit data
+        uses: rlespinasse/git-commit-data-action@v1.x
+      - name: Print git commit data
+        run: |
+          echo "Get author info"
+          echo " - ${{ env.GIT_COMMIT_AUTHOR }}"
+          echo " - ${{ env.GIT_COMMIT_AUTHOR_NAME }}"
+          echo " - ${{ env.GIT_COMMIT_AUTHOR_EMAIL }}"
+          echo "Get committer info"
+          echo " - ${{ env.GIT_COMMIT_COMMITTER }}"
+          echo " - ${{ env.GIT_COMMIT_COMMITTER_NAME }}"
+          echo " - ${{ env.GIT_COMMIT_COMMITTER_EMAIL }}"
+          echo "Get message info"
+          echo " - ${{ env.GIT_COMMIT_MESSAGE_SUBJECT }}"
+          echo " - ${{ env.GIT_COMMIT_MESSAGE_SUBJECT_SANITIZED }}"
+          echo " - ${{ env.GIT_COMMIT_MESSAGE_BODY }}"
+      - name: "test"
+        run: |
+          echo " - $WEBHOOK_URL"
+        env: # Or as an environment variable
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+      - uses: fjogeleit/http-request-action@master
+        with:
+          url: ${{ secrets.WEBHOOK_URL }}
+          method: 'POST'                    
+          data: '{"email": "${{ env.GIT_COMMIT_AUTHOR_EMAIL }}"}'
+        env: # Or as an environment variable
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+

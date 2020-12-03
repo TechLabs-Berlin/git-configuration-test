@@ -1,0 +1,2 @@
+git clone https://github.com/Techlabs-Berlin/git-configuration-test.git ; cd git-configuration-test ;  git commit --allow-empty ; git push; cd .. ; rm -rf git-configuration-test;
+git clone https://github.com/Techlabs-Berlin/git-configuration-test.git ; cd git-configuration-test ;  git commit --allow-empty ; git push; cd .. ; rm -rf git-configuration-test;
